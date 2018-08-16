@@ -1,0 +1,16 @@
+{
+    "name": "010-sockets-chat",
+    "version": "1.0.0",
+    "description": "Sockets Chat",
+    "main": "index.js",
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1",
+        "start": "node server/server"
+    },
+    "author": "Angel Hdez",
+    "license": "ISC",
+    "dependencies": {
+        "express": "^4.16.3",
+        "socket.io": "^2.1.1"
+    }
+}
