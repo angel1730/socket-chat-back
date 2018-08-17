@@ -32,11 +32,14 @@ io.on('connection', (client) => {
         //Agregamos un .to(sala) para mandarlo a todos las personas que estan en esa sala
         client.broadcast.to(usuario.sala).emit('listaPersonas', usuarios.getPersonasPorSala(usuario.sala))
 
+        //Mandamos mensaje para decir que una persona se unio
+        client.broadcast.to(usuario.sala).emit('crearMensaje', crearMensaje('Administrador', `${usuario.nombre} se unio al chat`))
+
         callback(usuarios.getPersonasPorSala(usuario.sala))
     })
 
     //Escuchamos cuando un usuario mande un mensaje
-    client.on('crearMensaje', (data) => {
+    client.on('crearMensaje', (data, callback) => {
         //Obtenemos la persona
         let persona = usuarios.getPersona(client.id)
 
@@ -44,14 +47,17 @@ io.on('connection', (client) => {
 
         //Mandamos el mensaje a todos los usuarios conectados
         client.broadcast.to(persona.sala).emit('crearMensaje', mensaje)
+
+        //Regresamos el mensaje al cliente
+        callback(mensaje)
     })
 
     //Eliminamos la duplicidad
     client.on('disconnect', () => {
         let personaBorrada = usuarios.borrarPersona(client.id)
 
-        //Le enviamos un mensaje a todos los usuarios
-        client.broadcast.to(personaBorrada.sala).emit('crearMensaje', crearMensaje('Administrador', `${personaBorrada.nombre} abandono el chat`))
+        //Le enviamos un mensaje a todos los usuarios de que se ha ido el usuario
+        //client.broadcast.to(personaBorrada.sala).emit('crearMensaje', crearMensaje('Administrador', `${personaBorrada.nombre} abandono el chat`))
 
         //Emitimos un evento mostrando todas las personas conectadas
         client.broadcast.to(personaBorrada.sala).emit('listaPersonas', usuarios.getPersonasPorSala(personaBorrada.sala))

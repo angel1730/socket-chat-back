@@ -1,7 +1,7 @@
 //var socket = io();
 
 //Obtenemos los parametros
-let params = new URLSearchParams(window.location.search)
+params = new URLSearchParams(window.location.search)
 
 if (!params.has('nombre') || !params.has('sala') || params.get('nombre') == '' || params.get('sala') == '') {
     window.location = 'index.html'
@@ -22,7 +22,8 @@ socket.on('connect', function() {
 
     //Le dedicomos al servidor quien soy yo
     socket.emit('entrarChat', usuario, function(resp) {
-        console.log('Usuarios conectados: ', resp);
+        //console.log('Usuarios conectados: ', resp);
+        renderizarUsuarios(resp)
     })
 });
 
@@ -44,14 +45,14 @@ socket.on('disconnect', function() {
 
 // Escuchar información
 socket.on('crearMensaje', function(mensaje) {
-
-    console.log('Servidor:', mensaje);
-
+    //console.log('Servidor:', mensaje);
+    renderizarMensajes(mensaje, false)
+    scrollBottom()
 });
 
 //Escuchar el evento de cuando un usuario entra o sale del chat
 socket.on('listaPersonas', function(personas) {
-    console.log(personas);
+    renderizarUsuarios(personas);
 })
 
 //Mensaje privados
